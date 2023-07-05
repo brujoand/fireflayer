@@ -4,7 +4,7 @@ import argparse
 import os
 import yaml
 
-from flask import Flask,request,json
+from flask import Flask,request
 from waitress import serve
 
 import logging

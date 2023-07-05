@@ -20,7 +20,7 @@ class Transaction:
     if match:
       value = match.group(group).strip()
       current_tags = self.transaction['tags']
-      if (not value in current_tags):
+      if (value not in current_tags):
         self.transaction['tags'] += [value]
         self.changed_fields += ['tags']
         logging.debug(f"extract_tag(tags) '{current_tags}' + '[{value}]'")
@@ -82,7 +82,7 @@ class Transaction:
   def remove_null_fields(self):
     targets = []
     for key, value in self.transaction.items():
-      if (value == None):
+      if (value is None):
         targets += [key]
 
     for target in targets:

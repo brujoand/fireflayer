@@ -1,6 +1,4 @@
 import json
-import os
-from datetime import datetime, timedelta
 from fireflayer.transaction import Transaction
 
 def get_transaction():
@@ -47,7 +45,7 @@ def test_remove_payment_tag():
   flayed_transaction = transaction.flay([flay_config])
   assert(flayed_transaction['description'] == "Ice Cream 4 Realz")
   assert(flayed_transaction['destination_name'] == "Ice Cream 4 Realz")
-  assert(not "description_id" in flayed_transaction)
+  assert("description_id" not in flayed_transaction)
 
 def test_catogery_by_filter():
 
@@ -93,5 +91,5 @@ def test_destination_by_tags():
   transaction = Transaction(transaction_data)
   flayed_transaction = transaction.flay([flay_config])
   assert(flayed_transaction['destination_name'] == "PayPal")
-  assert(not "destination_id" in flayed_transaction)
+  assert("destination_id" not in flayed_transaction)
 

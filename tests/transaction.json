@@ -1,0 +1,53 @@
+{
+  "content": {
+    "created_at": "2023-06-11T11:01:16+02:00",
+    "group_title": "",
+    "id": 2337,
+    "links": [
+      {
+        "rel": "self",
+        "uri": "/transactions/2337"
+      }
+    ],
+    "transactions": [
+      {
+        "user": "1",
+        "transaction_journal_id": "1653",
+        "type": "withdrawal",
+        "date": "2023-05-19T00:00:00+02:00",
+        "order": 0,
+        "currency_id": "26",
+        "currency_code": "NOK",
+        "currency_name": "Norske kroner",
+        "currency_symbol": "Kr",
+        "currency_decimal_places": 2,
+        "foreign_currency_decimal_places": 0,
+        "amount": "237.000000000000",
+        "description": "PayPal *Coop ObsEndToEndID: NOTPROVIDED",
+        "source_id": "5",
+        "source_name": "Kredittkort Tom Bombadill",
+        "source_type": "Asset account",
+        "destination_id": "119",
+        "destination_name": "PayPal *Coop Obs    ))))",
+        "destination_type": "Expense account",
+        "reconciled": false,
+        "notes": "4802257145",
+        "tags": [
+          "Data Import on 2023-05-20 @ 11:26"
+        ],
+        "external_id": "DC19EA32DE0E17B850FF72A55B40D303F0DDAC2C7C5990052901801E71DF542B",
+        "original_source": "ff3-v6.0.9|api-v2.0.1",
+        "import_hash_v2": "639a01355fc64fe64b65924192741668a43df07615ddac29c870aba6e1065ab8",
+        "payment_date": "2023-07-03T00:00:00+02:00"
+      }
+    ],
+   "updated_at": "2023-06-11T11:01:16+02:00",
+    "user": 1
+  },
+  "response": "TRANSACTIONS",
+  "trigger": "STORE_TRANSACTION",
+  "url": "http://10.1.0.23:8080/webhook",
+  "user_id": 1,
+  "uuid": "2d140aa0-b532-438a-9d52-c80455c03518",
+  "version": "v0"
+}

@@ -1,3 +1,5 @@
+[![Build](https://github.com/brujoand/fireflayer/actions/workflows/publish.yaml/badge.svg)](https://github.com/brujoand/fireflayer/actions/workflows/publish.yaml)
+
 # FireFlayer
 A python app to clean (or flay if you will)
   [firefly-iii](https://www.firefly-iii.org/) transactions as they are imported

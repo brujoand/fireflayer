@@ -1,9 +1,9 @@
 ---
 branches: ["main"]
+baseBranch: main
 plugins:
   - '@semantic-release/commit-analyzer'
   - '@semantic-release/release-notes-generator'
-  - '@semantic-release/changelog'
   - '@codedependant/semantic-release-docker'
   - '@semantic-release/git'
   - '@semantic-release/github'

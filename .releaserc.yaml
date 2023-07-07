@@ -1,0 +1,36 @@
+---
+branches: ["main"]
+plugins:
+  - '@semantic-release/commit-analyzer'
+  - '@semantic-release/release-notes-generator'
+  - '@semantic-release/changelog'
+  - '@codedependant/semantic-release-docker'
+  - '@semantic-release/git'
+  - '@semantic-release/github'
+verifyConditions:
+  - '@semantic-release/git'
+  - "@semantic-release/github"
+analyzeCommits:
+  - path: "@semantic-release/commit-analyzer"
+    releaseRules:
+    - type: "feat"
+      release: "minor"
+    - type: "fix"
+      release: "patch"
+    - type: "breaking"
+      release: "major"
+generateNotes:
+  - path: "@semantic-release/release-notes-generator"
+prepare:
+  - path: "@semantic-release/git"
+publish:
+  - path: "@semantic-release/github"
+  - path: "@codedependant/semantic-release-docker"
+    dockerImage: fireflayer
+    dockerLogin: false
+
+success:
+  - "@semantic-release/github"
+
+fail:
+  - "@semantic-release/github"

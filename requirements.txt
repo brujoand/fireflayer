@@ -1,5 +1,3 @@
-pytest
-ruff
 pyyaml
 requests
 flask

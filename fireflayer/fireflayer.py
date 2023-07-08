@@ -11,12 +11,13 @@ import logging
 from logging.config import dictConfig
 
 from fireflayer.firefly_client import FireflyClient
-from fireflayer.transaction import Transaction
+from fireflayer.split_transaction import SplitTransaction
 
 parser = argparse.ArgumentParser()
 
 parser.add_argument("--dry-run", help="Dry run (No side effects)", action="store_true")
-parser.add_argument("--log-level", help="Change log level (default: INFO)", default="INFO", choices=['INFO', 'DEBUG'])
+parser.add_argument("--log-level", help="Change log level (default: INFO)", default="INFO", choices=['WARN', 'INFO', 'DEBUG'])
+parser.add_argument("--port", help="Set the port for the webserver to listen on", default=8080)
 parser.add_argument("action", help="Which action to execute", choices=['webhook', 'process'])
 args = parser.parse_args()
 
@@ -43,7 +44,7 @@ config_path = os.environ['FIREFLAYER_CONFIG_PATH']
 config = yaml.safe_load(open(config_path, 'r'))
 
 fireflayer = Flask(__name__)
-ff = FireflyClient(api_url, auth_token)
+firefly_client = FireflyClient(api_url, auth_token)
 
 @fireflayer.route('/webhook', methods=['POST'])
 def webook():
@@ -58,21 +59,24 @@ def health():
 def process_transaction(webhook_data):
   logging.info("Processing transaction")
   content = webhook_data['content']
+  transaction_id = content['id']
+  group_title = content['group_title']
   transactions = content['transactions']
-  for transaction in transactions:
-    flay_and_update(Transaction(transaction))
+  flay_and_update(transaction_id, SplitTransaction(group_title, transactions))
 
-def flay_and_update(transaction):
-  flayed_transaction = transaction.flay(config["flay"])
-  if (not args.dry_run):
-    ff.update_transaction(flayed_transaction)
+def flay_and_update(transaction_id, split_transaction):
+  if(split_transaction.flay(config["flay"])):
+    if (args.dry_run):
+      logging.info("Skipping upload due to 'dry-run'")
+    else:
+      firefly_client.update_transaction(transaction_id, split_transaction)
   else:
-    logging.info("Skipping upload due to 'dry-run'")
+    logging.debug(f"No changes made to transaction {transaction_id}, skipping upload")
 
 def main():
   match args.action:
     case 'webhook':
-      serve(fireflayer, host="0.0.0.0", port=8080)
+      serve(fireflayer, host="0.0.0.0", port=args.port)
     case 'process':
-      for transaction in ff.list_transactions():
-        flay_and_update(transaction)
+      for transaction_id, transaction in firefly_client.list_transactions():
+        flay_and_update(transaction_id, transaction)

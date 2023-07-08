@@ -2,7 +2,7 @@ import json
 import logging
 import requests
 from requests.exceptions import HTTPError
-from fireflayer.transaction import Transaction
+from fireflayer.split_transaction import SplitTransaction
 
 class FireflyClient:
   def __init__(self, firefly_url, access_token):
@@ -31,18 +31,11 @@ class FireflyClient:
     except Exception as err:
       logging.error(f'Exception occured: {err}')
 
-  def update_transaction(self, transaction):
-    transaction_id = transaction['transaction_journal_id']
-    payload = {
-      "apply_rules": True,
-      "fire_webhooks": False,
-      "group_title": "Split Transaction Title",
-      "transactions": [transaction]
-    }
+  def update_transaction(self, transaction_id, split_transaction):
+    payload = json.dumps(split_transaction, default=lambda o: o.__dict__, sort_keys=True, indent=2)
 
     url = f"{self.configuration['host']}/api/v1/transactions/{transaction_id}"
-    json_formatted_str = json.dumps(payload, indent=2)
-    print(json_formatted_str)
+
     try:
       result = requests.put(url, json=payload, headers=self.configuration['headers'])
       if result.status_code == requests.codes.ok:
@@ -61,10 +54,12 @@ class FireflyClient:
     while(True):
       logging.info(f"fetching page {current_page}")
       api_response = self.get_request(url=current_page)
-      for item in api_response['data']:
-        raw_transactions = item['attributes']['transactions']
-        for raw_transaction in raw_transactions:
-          yield Transaction(raw_transaction)
+      for data in api_response['data']:
+        transaction_id = data['id']
+        attributes = data['attributes']
+        group_title = attributes['group_title']
+        transactions = attributes['transactions']
+        yield (transaction_id, SplitTransaction(group_title, transactions))
       try:
         current_page = api_response['links']['next']
       except KeyError:

@@ -1,4 +1,4 @@
-name: "Verify pull request"
+name: Verify pull request
 
 on:
   pull_request:

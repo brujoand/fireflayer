@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM python:3.10
 
 COPY fireflayer /opt/fireflayer/fireflayer
 COPY fireflayer.app /opt/fireflayer/fireflayer.app

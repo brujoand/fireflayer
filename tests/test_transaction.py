@@ -1,8 +1,4 @@
-import json
 from fireflayer.transaction import Transaction
-
-def get_transaction():
-  return json.load(open("tests/transaction.json", 'r'))
 
 def test_extract_payment_tag():
   flay_config = {
@@ -21,8 +17,8 @@ def test_extract_payment_tag():
   }
 
   transaction = Transaction(transaction_data)
-  flayed_transaction = transaction.flay([flay_config])
-  assert(flayed_transaction['tags'] == ['some existing tag', 'PayPal'])
+  transaction.flay([flay_config])
+  assert(transaction.transaction['tags'] == ['some existing tag', 'PayPal'])
 
 def test_remove_payment_tag():
   flay_config = {
@@ -42,12 +38,12 @@ def test_remove_payment_tag():
   }
 
   transaction = Transaction(transaction_data)
-  flayed_transaction = transaction.flay([flay_config])
-  assert(flayed_transaction['description'] == "Ice Cream 4 Realz")
-  assert(flayed_transaction['destination_name'] == "Ice Cream 4 Realz")
-  assert("description_id" not in flayed_transaction)
+  transaction.flay([flay_config])
+  assert(transaction.transaction['description'] == "Ice Cream 4 Realz")
+  assert(transaction.transaction['destination_name'] == "Ice Cream 4 Realz")
+  assert("description_id" not in transaction.transaction)
 
-def test_catogery_by_filter():
+def test_category_by_filter():
 
   flay_config = {
     "function": "category_by_filter",
@@ -69,8 +65,8 @@ def test_catogery_by_filter():
   }
 
   transaction = Transaction(transaction_data)
-  flayed_transaction = transaction.flay([flay_config])
-  assert(flayed_transaction['category_name'] == "Dagligvare")
+  transaction.flay([flay_config])
+  assert(transaction.transaction['category_name'] == "Dagligvare")
 
 def test_destination_by_tags():
 
@@ -89,7 +85,7 @@ def test_destination_by_tags():
   }
 
   transaction = Transaction(transaction_data)
-  flayed_transaction = transaction.flay([flay_config])
-  assert(flayed_transaction['destination_name'] == "PayPal")
-  assert("destination_id" not in flayed_transaction)
+  transaction.flay([flay_config])
+  assert(transaction.transaction['destination_name'] == "PayPal")
+  assert("destination_id" not in transaction.transaction)
 

@@ -35,5 +35,5 @@ jobs:
         with:
           context: .
           push: false
-          tags: brujoand/fireflayer:${{ github.sha }}
+          tags: brujoand/fireflayer:pr-${{github.sha}}
 

@@ -20,4 +20,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: brujoand/fireflayer:${{ env.GITHUB_REF_NAME }}
+          tags: brujoand/fireflayer:${{github.ref_name}}

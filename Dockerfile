@@ -8,6 +8,6 @@ WORKDIR /opt/fireflayer
 
 RUN pip3 install -r requirements.txt
 
-ENTRYPOINT ["/usr/local/bin/python"]
-CMD ["/opt/fireflayer/fireflayer.app"]
+ENTRYPOINT ["/opt/fireflayer/fireflayer.app"]
+CMD ["--help"]
 

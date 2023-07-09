@@ -77,7 +77,7 @@ FIREFLAYER_CONFIG_PATH # The path to the yaml config file
 
 Command line invocation:
 ```
-usage: fireflayer.app [-h] [--dry-run] [--log-level {INFO,DEBUG}] {webhook,process}
+usage: fireflayer.app [-h] [--dry-run] [--log-level {WARN,INFO,DEBUG}] [--port PORT] {webhook,process}
 
 positional arguments:
   {webhook,process}     Which action to execute
@@ -85,6 +85,7 @@ positional arguments:
 options:
   -h, --help            show this help message and exit
   --dry-run             Dry run (No side effects)
-  --log-level {INFO,DEBUG}
+  --log-level {WARN,INFO,DEBUG}
                         Change log level (default: INFO)
+  --port PORT           Set the port for the webserver to listen on
 ```

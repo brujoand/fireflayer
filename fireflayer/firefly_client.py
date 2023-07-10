@@ -33,9 +33,7 @@ class FireflyClient:
 
   def update_transaction(self, transaction_id, split_transaction):
     payload = json.dumps(split_transaction, default=lambda o: o.__dict__, sort_keys=True, indent=2)
-
     url = f"{self.configuration['host']}/api/v1/transactions/{transaction_id}"
-
     try:
       result = requests.put(url, json=payload, headers=self.configuration['headers'])
       if result.status_code == requests.codes.ok:
@@ -44,15 +42,13 @@ class FireflyClient:
         logging.error(f"Got HTTP {result.status_code} when updating transaction {transaction_id}: {result.json()}")
     except HTTPError as http_err:
       logging.error(f'HTTP error occurred: {http_err}')
-    except Exception as err:
-      logging.error(f'Exception occured: {err}')
+
 
   def list_transactions(self):
-    transactions = []
     current_page = f"{self.configuration['host']}/api/v1/transactions?type=default&page=1"
 
     while(True):
-      logging.info(f"fetching page {current_page}")
+      logging.debug(f"fetching page {current_page}")
       api_response = self.get_request(url=current_page)
       for data in api_response['data']:
         transaction_id = data['id']
@@ -65,5 +61,3 @@ class FireflyClient:
       except KeyError:
         logging.debug("No more transactions to list")
         break
-
-    return transactions

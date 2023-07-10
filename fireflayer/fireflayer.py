@@ -12,6 +12,7 @@ from logging.config import dictConfig
 
 from fireflayer.firefly_client import FireflyClient
 from fireflayer.split_transaction import SplitTransaction
+from fireflayer.flayer import Flayer
 
 parser = argparse.ArgumentParser()
 
@@ -65,13 +66,14 @@ def process_transaction(webhook_data):
   flay_and_update(transaction_id, SplitTransaction(group_title, transactions))
 
 def flay_and_update(transaction_id, split_transaction):
-  if(split_transaction.flay(config["flay"])):
-    if (args.dry_run):
-      logging.info("Skipping upload due to 'dry-run'")
-    else:
-      firefly_client.update_transaction(transaction_id, split_transaction)
+  flayer = Flayer(config["flay"])
+  for transaction in split_transaction.transactions:
+    flayer.flay(transaction)
+
+  if (args.dry_run):
+    logging.info("Skipping upload due to 'dry-run'")
   else:
-    logging.debug(f"No changes made to transaction {transaction_id}, skipping upload")
+    firefly_client.update_transaction(transaction_id, split_transaction)
 
 def main():
   match args.action:

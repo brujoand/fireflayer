@@ -19,7 +19,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--dry-run", help="Dry run (No side effects)", action="store_true")
 parser.add_argument("--log-level", help="Change log level (default: INFO)", default="INFO", choices=['WARN', 'INFO', 'DEBUG'])
 parser.add_argument("--port", help="Set the port for the webserver to listen on", default=8080)
-parser.add_argument("action", help="Which action to execute", choices=['webhook', 'process'])
+parser.add_argument("action", help="Which action to execute", choices=['webhook', 'process_one', 'process'])
 args = parser.parse_args()
 
 dictConfig({
@@ -63,9 +63,12 @@ def process_transaction(webhook_data):
   transaction_id = content['id']
   group_title = content['group_title']
   transactions = content['transactions']
-  flay_and_update(transaction_id, SplitTransaction(group_title, transactions))
+  flay_and_update(SplitTransaction(transaction_id, group_title, transactions))
 
-def flay_and_update(transaction_id, split_transaction):
+def flay_and_update(split_transaction):
+  incoming_transaction_json = split_transaction.as_minimal_json()
+  transaction_id = split_transaction.transaction_id
+
   flayer = Flayer(config["flay"])
   for transaction in split_transaction.transactions:
     flayer.flay(transaction)
@@ -73,12 +76,25 @@ def flay_and_update(transaction_id, split_transaction):
   if (args.dry_run):
     logging.info("Skipping upload due to 'dry-run'")
   else:
-    firefly_client.update_transaction(transaction_id, split_transaction)
+    transaction_json = split_transaction.as_minimal_json()
+    if (incoming_transaction_json == transaction_json):
+      logging.info(f"Transaction with id {transaction_id} has no changes, skipping upload")
+    else:
+      try:
+        firefly_client.update_transaction(transaction_id, transaction_json)
+      except Exception as err:
+        logging.error(f"Failed to update transaction '{transaction_id}': {err}")
+
 
 def main():
   match args.action:
     case 'webhook':
       serve(fireflayer, host="0.0.0.0", port=args.port)
     case 'process':
-      for transaction_id, transaction in firefly_client.list_transactions():
-        flay_and_update(transaction_id, transaction)
+      for transaction in firefly_client.list_transactions():
+        flay_and_update(transaction)
+    case 'process_one':
+      transaction_id = input("Transaction id: ")
+      transaction = firefly_client.get_transaction(transaction_id)
+      flay_and_update(transaction)
+

@@ -14,16 +14,6 @@ class Flayer:
       if (field_name == changed_field and field_id in transaction):
         del transaction[field_id]
 
-  def remove_null_fields(self, transaction):
-    targets = []
-    for key, value in transaction.items():
-      if (value is None):
-        targets += [key]
-
-    for target in targets:
-      del transaction[target]
-
-
   def replace(self, transaction, source_fields, pattern, value):
     for source_field in source_fields:
       current_value = transaction[source_field]
@@ -113,5 +103,4 @@ class Flayer:
         case _:
           raise RuntimeError(f"Invalid flay config, unknown function {flay['function']}")
 
-    self.remove_null_fields(transaction)
     logging.debug(f"Done flaying transaction {transaction['transaction_journal_id']}")

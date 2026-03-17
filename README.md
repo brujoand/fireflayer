@@ -1,4 +1,4 @@
-[![Build](https://github.com/brujoand/fireflayer/actions/workflows/publish.yaml/badge.svg)](https://github.com/brujoand/fireflayer/actions/workflows/publish.yaml)
+[![CI](https://github.com/brujoand/fireflayer/actions/workflows/ci.yml/badge.svg)](https://github.com/brujoand/fireflayer/actions/workflows/ci.yml)
 
 # FireFlayer
 A python app to clean (or flay if you will)
